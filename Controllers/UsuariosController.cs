@@ -19,6 +19,7 @@ namespace APIDesafio.Controllers
 
         private UsuarioRepository Repositorio = new UsuarioRepository();
         private Email _Email = new Email();  
+        private Log _log = new Log();
 
 
         //Post - Cadastrar
@@ -39,14 +40,14 @@ namespace APIDesafio.Controllers
 
 
                 Repositorio.Cadastrar(user);
-                Repositorio.RegistrarLog(DateTime.Now, 1, $"O Usuario {user.Name} Foi cadastrado no sistema.", "-");
+                _log.RegistrarLog(DateTime.Now, 1, $"O Usuario {user.Name} Foi cadastrado no sistema.", "-");
                 _Email.EnviarEmail("Usuario Adicionado", $"Olá, Gabriel, O usuario {user.UserName} foi adicionado em {DateTime.Now}");
 
                 return Ok(user);
             }
             catch (System.Exception ex)
             {
-                Repositorio.RegistrarLog(DateTime.Now, 1, $"Ocorreu um erro", ex.Message);
+                _log.RegistrarLog(DateTime.Now, 1, $"Ocorreu um erro", ex.Message);
                 return BadRequest("Um Erro Foi Encontrado, Verifique o log de serviço para mais detalhes");
 
             }
@@ -66,13 +67,13 @@ namespace APIDesafio.Controllers
             {               
 
                Repositorio.Alterar(id, usuario);
-                Repositorio.RegistrarLog(DateTime.Now, 1, $"O Usuario {usuario.Id} Foi alterado.", "-");
+                _log.RegistrarLog(DateTime.Now, 1, $"O Usuario {usuario.Id} Foi alterado.", "-");
                 _Email.EnviarEmail("Usuario Alterado", $"Olá, Gabriel, O usuario de id {id} foi alterado Para {usuario.Name} em {DateTime.Now}");
                 return Ok();
             }
             catch (System.Exception ex)
             {
-                Repositorio.RegistrarLog(DateTime.Now, 1, $"Ocorreu um erro, Verifique o banco de dados para mais detalhes", ex.Message);
+                _log.RegistrarLog(DateTime.Now, 1, $"Ocorreu um erro, Verifique o banco de dados para mais detalhes", ex.Message);
                 return BadRequest("Um Erro Foi Encontrado, Verifique o log de serviço para mais detalhes");
 
             }
@@ -90,7 +91,7 @@ namespace APIDesafio.Controllers
             }
             catch (System.Exception ex)
             {
-                Repositorio.RegistrarLog(DateTime.Now, 1, $"Ocorreu um erro, Verifique o campo Exception no SQL para mais detalhes", ex.Message);
+                _log.RegistrarLog(DateTime.Now, 1, $"Ocorreu um erro, Verifique o campo Exception no SQL para mais detalhes", ex.Message);
                 return BadRequest("Um Erro Foi Encontrado, Verifique o log de serviço para mais detalhes");
 
             }
@@ -107,12 +108,12 @@ namespace APIDesafio.Controllers
                 var BuscarUsuario = Repositorio.BuscarPorId(id);
                 if (BuscarUsuario == null)
                 {
-                    Repositorio.RegistrarLog(DateTime.Now, 1, $"Ocorreu um erro, Verifique o banco de dados para mais detalhes", "Usuario Não encontrado");
+                    _log.RegistrarLog(DateTime.Now, 1, $"Ocorreu um erro, Verifique o banco de dados para mais detalhes", "Usuario Não encontrado");
                     return Ok("Usuario não encontrado"); ;
 
                 }
                 Repositorio.Delete(id);
-                Repositorio.RegistrarLog(DateTime.Now, 1, $"O Usuario de Id {id} Foi apagado do sistema.", "-");
+                _log.RegistrarLog(DateTime.Now, 1, $"O Usuario de Id {id} Foi apagado do sistema.", "-");
                 _Email.EnviarEmail("Usuario Apagado", $"Olá, Gabriel, O usuario de id {id} foi apagado em {DateTime.Now}");
                 return Ok($"Usuario {id} foi excluido com sucesso");
 
@@ -122,7 +123,7 @@ namespace APIDesafio.Controllers
             }
             catch (System.Exception ex)
             {
-                Repositorio.RegistrarLog(DateTime.Now, 1, $"Ocorreu um erro, Verifique o banco de dados para mais detalhes", ex.Message);
+                _log.RegistrarLog(DateTime.Now, 1, $"Ocorreu um erro, Verifique o banco de dados para mais detalhes", ex.Message);
                 return BadRequest("Um Erro Foi Encontrado, Verifique o log de serviço para mais detalhes");
                
             }
