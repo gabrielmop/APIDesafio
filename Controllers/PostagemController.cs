@@ -1,21 +1,26 @@
 ﻿using APIDesafio.Modelos;
 using APIDesafio.Repository;
 using APIDesafio.Utils;
-using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data;
+using System.Data.SqlClient;
+using System.IO;
 
 namespace APIDesafio.Controllers
 {
     
     [ApiController]
-    public class PostagemController
+    public class PostagemController : ControllerBase
     {
         private PostagemRepository Repositorio = new PostagemRepository();
         private Log _log = new Log();
         private Email _email= new Email();
+
 
         [HttpGet("Listar_Postagens")]
         public List<Postagem> ListarPostagem()
@@ -27,15 +32,52 @@ namespace APIDesafio.Controllers
         [HttpDelete("Deletar_Postagem/{id}")]
         public string ApagarPostagem(int id)
         {
+            try
+            {
+                Repositorio.ApagarPostagem(id);
+                _log.RegistrarLog(DateTime.Now, 1, $"A Postagem de Id {id} foi apagada do sistema", "Nenhum Erro encontrado");
+                _email.EnviarEmail("Postagem Apagada", $"Olá Gabriel, A postagem de Id {id} foi apagada em {DateTime.Now}");
 
+                return $"A Postagem de ID {id} foi excluida com sucesso";
+            }
+            catch (System.Exception ex)
+            {
+                _log.RegistrarLog(DateTime.Now, 0, $"Ocorreu um erro", ex.Message);
+                return "Um erro foi encontrado";
+            }
 
-            Repositorio.ApagarPostagem(id);
-            _log.RegistrarLog(DateTime.Now, 1, $"A Postagem de Id {id} foi apagada do sistema", "Nenhum Erro encontrado");
-            _email.EnviarEmail("Postagem Apagada", $"Olá Gabriel, A postagem de Id {id} foi apagada em {DateTime.Now}");
-
-            return $"A Postagem de ID {id} foi excluida com sucesso";
 
         }
+
+        [HttpPost("Cadastrar_Postagem")]
+        public IActionResult Novapostagem([FromForm] Postagem Post, IFormFile Arquivo)
+        {
+
+            try
+            {
+                string[] ExtensoesPermitidas = { "Jpeg", "jpg", "png", "svg" };
+                string UploadResultado = Upload.UploadArquivo(Arquivo, ExtensoesPermitidas, "Images");
+
+                if (UploadResultado == "")
+                {
+                    return BadRequest("Arquivo Não encontrado ou extensão não permitida");
+                }
+                Post.Imagem = UploadResultado;
+
+                Repositorio.NovaPostagem(Post);
+                _log.RegistrarLog(DateTime.Now, 1, $"O Usuario de ID {Post.UsuarioGameId} fez uma nova postagem em {DateTime.Now}", "Não foi encontrado erros");
+                _email.EnviarEmail("Nova Postagem", $"Olá Gabriel, O usuario de ID {Post.UsuarioGameId} fez uma nova postagem em {DateTime.Now}");
+
+                return Ok(Post);
+            }
+            catch(System.Exception ex)
+            {
+                _log.RegistrarLog(DateTime.Now, 0, $"Ocorreu um erro", ex.Message);
+                return BadRequest("Um Erro Foi Encontrado, Verifique o log de serviço para mais detalhes");
+            }
+        }
+
+
 
     }
 }

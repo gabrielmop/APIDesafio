@@ -47,7 +47,7 @@ namespace APIDesafio.Controllers
             }
             catch (System.Exception ex)
             {
-                _log.RegistrarLog(DateTime.Now, 1, $"Ocorreu um erro", ex.Message);
+                _log.RegistrarLog(DateTime.Now, 0, $"Ocorreu um erro", ex.Message);
                 return BadRequest("Um Erro Foi Encontrado, Verifique o log de serviço para mais detalhes");
 
             }

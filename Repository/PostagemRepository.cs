@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace APIDesafio.Repository
 {
@@ -37,6 +38,8 @@ namespace APIDesafio.Repository
             }
             return $"Usuario {id} excluido com sucesso";
         }
+
+     
 
         public List<Postagem> ListarPostagem()
         {
@@ -73,7 +76,32 @@ namespace APIDesafio.Repository
 
         public IActionResult NovaPostagem(Postagem Post)
         {
-            throw new System.NotImplementedException();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = "insert into Postagem (TextoPostagem, Imagem, DataHora, UsuarioGameId) Values (@TextoPostagem, @Imagem, @DataHora, @UsuarioGameId)";
+
+                using (SqlCommand cmd = new SqlCommand(query, connection))
+                {
+                    cmd.Parameters.Add("@TextoPostagem", System.Data.SqlDbType.NVarChar).Value = Post.TextoPostagem;
+                    cmd.Parameters.Add("@Imagem", System.Data.SqlDbType.NVarChar).Value = Post.Imagem;
+                    cmd.Parameters.Add("@DataHora", System.Data.SqlDbType.DateTime).Value = Post.DataHora;
+                    cmd.Parameters.Add("UsuarioGameId", System.Data.SqlDbType.Int).Value = Post.UsuarioGameId;
+
+                    cmd.CommandType= CommandType.Text;
+                    cmd.ExecuteNonQuery();
+
+                    return null;
+                }
+            }
+
+
+        }
+
+        string IPostagemRepository.EditarPostagem(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

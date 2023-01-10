@@ -13,8 +13,8 @@ namespace APIDesafio.Modelos
 
         public string Imagem { get; set; }
 
-        [Required]
-        public DateTime DataHora { get; set; }
+        
+        public DateTime DataHora { get; set; } = DateTime.Now;
 
         [Required]
         public int UsuarioGameId { get; set; }
