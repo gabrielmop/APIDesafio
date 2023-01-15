@@ -40,7 +40,7 @@ namespace APIDesafio.Controllers
 
 
                 Repositorio.Cadastrar(user);
-                _log.RegistrarLog(DateTime.Now, 1, $"O Usuario {user.Name} Foi cadastrado no sistema.", "-");
+                _log.RegistrarLog(DateTime.Now, 1, $"O Usuario {user.Name} Foi cadastrado no sistema.", "Nenhum Erro encontrado");
                 _Email.EnviarEmail("Usuario Adicionado", $"Olá, Gabriel, O usuario {user.UserName} foi adicionado em {DateTime.Now}");
 
                 return Ok(user);
@@ -67,7 +67,7 @@ namespace APIDesafio.Controllers
             {               
 
                Repositorio.Alterar(id, usuario);
-                _log.RegistrarLog(DateTime.Now, 1, $"O Usuario {usuario.Id} Foi alterado.", "-");
+                _log.RegistrarLog(DateTime.Now, 1, $"O Usuario {usuario.Id} Foi alterado.", "Nenhum Erro encontrado");
                 _Email.EnviarEmail("Usuario Alterado", $"Olá, Gabriel, O usuario de id {id} foi alterado Para {usuario.Name} em {DateTime.Now}");
                 return Ok();
             }
@@ -113,7 +113,7 @@ namespace APIDesafio.Controllers
 
                 }
                 Repositorio.Delete(id);
-                _log.RegistrarLog(DateTime.Now, 1, $"O Usuario de Id {id} Foi apagado do sistema.", "-");
+                _log.RegistrarLog(DateTime.Now, 1, $"O Usuario de Id {id} Foi apagado do sistema.", "Nenhum Erro encontrado");
                 _Email.EnviarEmail("Usuario Apagado", $"Olá, Gabriel, O usuario de id {id} foi apagado em {DateTime.Now}");
                 return Ok($"Usuario {id} foi excluido com sucesso");
 

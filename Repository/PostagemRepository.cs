@@ -1,5 +1,6 @@
 ﻿using APIDesafio.Interfaces;
 using APIDesafio.Modelos;
+
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace APIDesafio.Repository
 
                 string query = "Delete from Postagem where PostagemID=@id";
 
-                using(SqlCommand cmd = new SqlCommand(query, con))
+                using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     cmd.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = id;
 
@@ -39,7 +40,30 @@ namespace APIDesafio.Repository
             return $"Usuario {id} excluido com sucesso";
         }
 
-     
+        public string EditarPostagem(int id, Postagem Post)
+        {
+            SqlConnection conexao = new SqlConnection(connectionString);
+            conexao.Open();
+
+            string query = "update Postagem set TextoPostagem=@TextoPostagem, Imagem=@Imagem, DataHora=@DataHora, UsuarioGameId=@UsuarioGameId where PostagemId=@id";
+
+            using (SqlCommand cmd = new SqlCommand(query, conexao))
+            {
+                
+                cmd.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = id;
+                cmd.Parameters.Add("@TextoPostagem", System.Data.SqlDbType.NVarChar).Value = Post.TextoPostagem;
+                cmd.Parameters.Add("@Imagem", System.Data.SqlDbType.NVarChar).Value=Post.Imagem;
+                cmd.Parameters.Add("@DataHora", System.Data.SqlDbType.DateTime).Value = Post.DataHora;
+                cmd.Parameters.Add("@UsuarioGameId", System.Data.SqlDbType.Int).Value = Post.UsuarioGameId;
+
+                cmd.CommandType= CommandType.Text;
+                cmd.ExecuteNonQuery();
+                Post.PostagemId = id;
+                
+            }
+            return $"a Postagem de Id {id} Foi alterada em {DateTime.Now}";
+
+        }
 
         public List<Postagem> ListarPostagem()
         {
@@ -59,7 +83,7 @@ namespace APIDesafio.Repository
                         {
                             Lista.Add(new Postagem
                             {
-                                Id = (int)reader[0],
+                                PostagemId = (int)reader[0],
                                 TextoPostagem = (string)reader[1],
                                 Imagem = (string)reader[2],
                                 DataHora = (DateTime)reader[3],
@@ -99,9 +123,6 @@ namespace APIDesafio.Repository
 
         }
 
-        string IPostagemRepository.EditarPostagem(int id)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }

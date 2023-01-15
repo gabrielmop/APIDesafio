@@ -13,7 +13,7 @@ namespace APIDesafio.Interfaces
 
         public string ApagarPostagem(int id);
 
-        public string EditarPostagem(int id);
+        public string EditarPostagem(int id, Postagem Post);
 
 
 

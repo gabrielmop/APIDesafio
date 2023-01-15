@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using APIDesafio.Utils;
 
+
 namespace APIDesafio.Repository
 {
     public class UsuarioRepository : IUsuarioRepository

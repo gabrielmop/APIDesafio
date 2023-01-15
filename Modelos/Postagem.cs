@@ -6,7 +6,7 @@ namespace APIDesafio.Modelos
     public class Postagem
     {
 
-        public int Id { get; set; }
+        public int PostagemId { get; set; }
 
         [Required]
         public string TextoPostagem { get; set; }
