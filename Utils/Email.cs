@@ -19,10 +19,10 @@ namespace APIDesafio.Utils
 
             using (var smtp = new SmtpClient("smtp.gmail.com"))
             {
-                smtp.EnableSsl = true; // GMail requer SSL
-                smtp.Port = 587;       // porta para SSL
-                smtp.DeliveryMethod = SmtpDeliveryMethod.Network; // modo de envio
-                smtp.UseDefaultCredentials = false; // vamos utilizar credencias especificas
+                smtp.EnableSsl = true; 
+                smtp.Port = 587;      
+                smtp.DeliveryMethod = SmtpDeliveryMethod.Network; 
+                smtp.UseDefaultCredentials = false; 
 
                 // seu usuário e senha para autenticação
                 smtp.Credentials = new NetworkCredential("gabrel.gabriel@gmail.com", "atwvzclutkgxghqo");
