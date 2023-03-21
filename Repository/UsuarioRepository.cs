@@ -7,7 +7,7 @@ using System;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using APIDesafio.Utils;
-
+using GSF.Data;
 
 namespace APIDesafio.Repository
 {
@@ -16,14 +16,21 @@ namespace APIDesafio.Repository
         //Criar String de conexão com o DB
         readonly string connectionString = "data source=MOOP_PC;Integrated Security =true;Initial Catalog=BRGamersSquare";
 
-        public IActionResult Alterar(int id, Usuarios usuario)
+        private string HashPass(string senha)
         {
-                                           
+            byte[] pass = System.Text.Encoding.ASCII.GetBytes(senha);
+            byte[] data = new System.Security.Cryptography.SHA256Managed().ComputeHash(pass);
+            return System.Text.Encoding.ASCII.GetString(data);
+        }
+
+        public IActionResult Alterar(int id, Usuarios usuario)
+        {                                           
                 SqlConnection conexao = new SqlConnection(connectionString);
                 conexao.Open();
 
-                string query = "Update Usuarios Set Nome=@Nome,UserName=@UserName, Senha=@Senha, Email=@Email, Idade=@idade, Imagem=@Imagem Where UsuarioGameId=@id";
+                string query = "Update Usuarios Set Nome=@Nome,UserName=@UserName, Senha=@Senha, Email=@Email, Idade=@idade Where UsuarioGameId=@id";
 
+                usuario.Senha = HashPass(usuario.Senha);
                 using (SqlCommand cmd = new SqlCommand(query, conexao))
                 {
                     cmd.Parameters.Add("@id", System.Data.SqlDbType.Int).Value = id;
@@ -31,15 +38,12 @@ namespace APIDesafio.Repository
                     cmd.Parameters.Add("@UserName", System.Data.SqlDbType.NVarChar).Value = usuario.UserName;
                     cmd.Parameters.Add("@Senha", System.Data.SqlDbType.NVarChar).Value = usuario.Senha;
                     cmd.Parameters.Add("@Email", System.Data.SqlDbType.NVarChar).Value = usuario.Email;
-                    cmd.Parameters.Add("@idade", System.Data.SqlDbType.Int).Value = usuario.Idade;
-                    cmd.Parameters.Add("@Imagem", System.Data.SqlDbType.NVarChar).Value = usuario.Imagem;
+                    cmd.Parameters.Add("@idade", System.Data.SqlDbType.Int).Value = usuario.Idade;             
 
                 cmd.CommandType = CommandType.Text;
+
                     cmd.ExecuteNonQuery();
                     usuario.Id = id;
-
-
-
                 }
                 return (IActionResult)usuario;
          
@@ -90,8 +94,8 @@ namespace APIDesafio.Repository
 
                     //Query de inserção de usuario
                     string query = "INSERT INTO Usuarios (Nome, UserName, senha, email, idade, Imagem) VALUES (@Name, @UserName, @senha,@email, @idade, @Imagem)";
-
-                    using (SqlCommand cmd = new SqlCommand(query, conexao))
+                user.Senha = HashPass(user.Senha);
+                using (SqlCommand cmd = new SqlCommand(query, conexao))
                     {
                         //Criamos o comando de execução
                         cmd.Parameters.Add("@Name", System.Data.SqlDbType.NVarChar).Value = user.Name;

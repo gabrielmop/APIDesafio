@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace APIDesafio.Controllers
 {
@@ -29,7 +30,7 @@ namespace APIDesafio.Controllers
         }
 
         [HttpDelete("Deletar_Postagem/{id}")]
-        public string ApagarPostagem(int id)
+        public  string ApagarPostagem(int id)
         {
             try
             {
@@ -41,7 +42,7 @@ namespace APIDesafio.Controllers
             }
             catch (System.Exception ex)
             {
-                _log.RegistrarLog(DateTime.Now, 0, $"Ocorreu um erro", ex.Message);
+                _log.RegistrarLog(DateTime.Now, 0, $"Ocorreu um erro, Verifique a coluna Exception para mais detalhes", ex.Message);
                 return "Um erro foi encontrado";
             }
 
@@ -64,14 +65,14 @@ namespace APIDesafio.Controllers
                 Post.Imagem = UploadResultado;
 
                 Repositorio.NovaPostagem(Post);
-                _log.RegistrarLog(DateTime.Now, 1, $"O Usuario de ID {Post.UsuarioGameId} fez uma nova postagem em {DateTime.Now}", "Nenhum Erro encontrado");
-                _email.EnviarEmail("Nova Postagem", $"Olá Gabriel, O usuario de ID {Post.UsuarioGameId} fez uma nova postagem em {DateTime.Now}");
+                 _log.RegistrarLog(DateTime.Now, 1, $"O Usuario de ID {Post.UsuarioGameId} fez uma nova postagem em {DateTime.Now}", "Nenhum Erro encontrado");
+                 _email.EnviarEmail("Nova Postagem", $"Olá Gabriel, O usuario de ID {Post.UsuarioGameId} fez uma nova postagem em {DateTime.Now}");
 
                 return Ok(Post);
             }
             catch(System.Exception ex)
             {
-                _log.RegistrarLog(DateTime.Now, 0, $"Ocorreu um erro", ex.Message);
+                _log.RegistrarLog(DateTime.Now, 0, $"Ocorreu um erro, Verifique a coluna Exception para mais detalhes", ex.Message);
                 return BadRequest("Um Erro Foi Encontrado, Verifique o log de serviço para mais detalhes");
             }
         }
@@ -98,7 +99,7 @@ namespace APIDesafio.Controllers
             }
             catch (System.Exception ex)
             {
-                _log.RegistrarLog(DateTime.Now, 0, $"Ocorreu um erro", ex.Message);
+                _log.RegistrarLog(DateTime.Now, 0, $"Ocorreu um erro, Verifique a coluna Exception para mais detalhes", ex.Message);
                 return "Um Erro Foi Encontrado, Verifique o log de serviço para mais detalhes";
             }
 

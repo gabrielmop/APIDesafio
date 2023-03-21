@@ -47,7 +47,7 @@ namespace APIDesafio.Controllers
             }
             catch (System.Exception ex)
             {
-                _log.RegistrarLog(DateTime.Now, 0, $"Ocorreu um erro", ex.Message);
+                _log.RegistrarLog(DateTime.Now, 0, $"Ocorreu um erro, Verifique a coluna Exception para mais detalhes", ex.Message);
                 return BadRequest("Um Erro Foi Encontrado, Verifique o log de serviço para mais detalhes");
 
             }
@@ -59,21 +59,26 @@ namespace APIDesafio.Controllers
 
 
         //Alterar
-        [HttpPut("Alterar_usuario/{id}")]
-        public IActionResult Alterar([FromForm] int id, Usuarios usuario)
+        [HttpPut("Alterar_usuario")]
+        public IActionResult Alterar([FromForm] int id,[FromForm] Usuarios usuario)
         {
 
             try
-            {               
+            {
+                Repositorio.BuscarPorId(id);
+                if (id == 0)
+                {
+                    return NotFound("Usuario não encontrado");
+                }
 
-               Repositorio.Alterar(id, usuario);
+                Repositorio.Alterar(id, usuario);
                 _log.RegistrarLog(DateTime.Now, 1, $"O Usuario {usuario.Id} Foi alterado.", "Nenhum Erro encontrado");
                 _Email.EnviarEmail("Usuario Alterado", $"Olá, Gabriel, O usuario de id {id} foi alterado Para {usuario.Name} em {DateTime.Now}");
-                return Ok();
+                return Ok(usuario);
             }
             catch (System.Exception ex)
             {
-                _log.RegistrarLog(DateTime.Now, 1, $"Ocorreu um erro, Verifique o banco de dados para mais detalhes", ex.Message);
+                _log.RegistrarLog(DateTime.Now, 1, $"Ocorreu um erro, Verifique a coluna Exception para mais detalhes", ex.Message);
                 return BadRequest("Um Erro Foi Encontrado, Verifique o log de serviço para mais detalhes");
 
             }
@@ -91,13 +96,13 @@ namespace APIDesafio.Controllers
             }
             catch (System.Exception ex)
             {
-                _log.RegistrarLog(DateTime.Now, 1, $"Ocorreu um erro, Verifique o campo Exception no SQL para mais detalhes", ex.Message);
+                _log.RegistrarLog(DateTime.Now, 1, $"Ocorreu um erro, Verifique a coluna Exception para mais detalhes", ex.Message);
                 return BadRequest("Um Erro Foi Encontrado, Verifique o log de serviço para mais detalhes");
 
             }
         }
 
-       
+
 
         //Deletar
         [HttpDelete("Deletar_Usuario/{id}")]
@@ -108,13 +113,13 @@ namespace APIDesafio.Controllers
                 var BuscarUsuario = Repositorio.BuscarPorId(id);
                 if (BuscarUsuario == null)
                 {
-                    _log.RegistrarLog(DateTime.Now, 1, $"Ocorreu um erro, Verifique o banco de dados para mais detalhes", "Usuario Não encontrado");
+                    _log.RegistrarLog(DateTime.Now, 1, $"Ocorreu um erro, Verifique a coluna Exception para mais detalhes", "Usuario Não encontrado");
                     return Ok("Usuario não encontrado"); ;
 
                 }
                 Repositorio.Delete(id);
                 _log.RegistrarLog(DateTime.Now, 1, $"O Usuario de Id {id} Foi apagado do sistema.", "Nenhum Erro encontrado");
-                _Email.EnviarEmail("Usuario Apagado", $"Olá, Gabriel, O usuario de id {id} foi apagado em {DateTime.Now}");
+                //_Email.EnviarEmail("Usuario Apagado", $"Olá, Gabriel, O usuario de id {id} foi apagado em {DateTime.Now}");
                 return Ok($"Usuario {id} foi excluido com sucesso");
 
 
@@ -123,7 +128,7 @@ namespace APIDesafio.Controllers
             }
             catch (System.Exception ex)
             {
-                _log.RegistrarLog(DateTime.Now, 1, $"Ocorreu um erro, Verifique o banco de dados para mais detalhes", ex.Message);
+                _log.RegistrarLog(DateTime.Now, 1, $"Ocorreu um erro, Verifique a coluna Exception para mais detalhes", ex.Message);
                 return BadRequest("Um Erro Foi Encontrado, Verifique o log de serviço para mais detalhes");
                
             }

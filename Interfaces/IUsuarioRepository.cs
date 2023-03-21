@@ -14,5 +14,6 @@ namespace APIDesafio.Interfaces
         IActionResult Alterar(int id, Usuarios usuario);
         string Delete(int id);
         public string BuscarPorId(int id);
+        
     }
 }

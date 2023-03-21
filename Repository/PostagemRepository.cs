@@ -1,12 +1,12 @@
 ﻿using APIDesafio.Interfaces;
 using APIDesafio.Modelos;
-
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
-using System.Threading.Tasks;
+using System;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+using APIDesafio.Utils;
+using Microsoft.Data.SqlClient;
 
 namespace APIDesafio.Repository
 {
@@ -42,7 +42,7 @@ namespace APIDesafio.Repository
 
         public string EditarPostagem(int id, Postagem Post)
         {
-            SqlConnection conexao = new SqlConnection(connectionString);
+           var conexao = new SqlConnection(connectionString);
             conexao.Open();
 
             string query = "update Postagem set TextoPostagem=@TextoPostagem, Imagem=@Imagem, DataHora=@DataHora, UsuarioGameId=@UsuarioGameId where PostagemId=@id";
@@ -123,6 +123,5 @@ namespace APIDesafio.Repository
 
         }
 
-       
     }
 }
